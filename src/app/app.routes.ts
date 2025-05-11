@@ -21,12 +21,6 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
-  { path: 'admin-dashboard', component: AdminDashboardComponent },
-  { path: 'pending', component: PendingComponent},
-  { path: 'wallet', component: WalletComponent},
-  { path: 'dashboard', component: DashboardComponent},
-  { path: 'users', component: UsersComponent},
-  { path: 'side-nav', component: SideNavComponent},
 
   // Protected routes
   {
@@ -52,19 +46,18 @@ export const routes: Routes = [
     canActivate: [walletStatusGuard, AuthGuard],
     data: { requiredStatus: 'PENDING', role: 'CUSTOMER_ROLE' }
   },
-  {
-    path: 'admin-dashboard',
-    component: AdminDashboardComponent,
-    canActivate: [AuthGuard],
-    data: { role: 'ROLE_ADMIN' }
-  },
 
   // Navbar route (if still needed)
   { path: 'navbar', component: NavbarComponent },
 
   // Redirects
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  {path: 'account', component: SideNavComponent, children:
+  {
+    path: 'account', 
+    component: SideNavComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'ROLE_ADMIN' },
+    children:
     [
       {path: 'dashboard', component: DashboardComponent},
       {path: 'users', component: UsersComponent},
