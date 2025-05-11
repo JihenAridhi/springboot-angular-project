@@ -23,12 +23,6 @@ export class LoginComponent {
 
   ngOnInit(): void
   {
-    //localStorage.removeItem('accessToken')
-    //localStorage.removeItem('fullname')
-    //localStorage.removeItem('role')
-    //localStorage.removeItem('roles')
-    //localStorage.removeItem('userId')
-    //localStorage.removeItem('username')
     localStorage.clear()
   }
 
