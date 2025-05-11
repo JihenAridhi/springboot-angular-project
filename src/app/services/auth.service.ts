@@ -33,20 +33,15 @@ export class AuthService {
 
   login(username: string, password: string): Observable<any> {
     const loginPayload = { username, password };
-    return this.http.post<any>(`${this.apiUrl}/users/login`, loginPayload).pipe(
+    return this.http.post<any>(`${this.apiUrl}/user/login`, loginPayload).pipe(
       tap({
         next: (response) => {
-          // Store all necessary user data
-          localStorage.setItem('authToken', response.token); // Make sure your backend returns a token
-          localStorage.setItem('roles', JSON.stringify(response.role));
-          localStorage.setItem('username', response.username);
-          localStorage.setItem('userId', response.userId);
-          localStorage.setItem('fullname', response.fullname);
+          
           
           this.userService.setLoggedInUserId(response.userId);
           
           // Navigate based on user role or status
-          this.router.navigate(['/wallet']); // Or your default route
+          //this.router.navigate(['/wallet/pending']); // Or your default route
         },
         error: (err) => console.error('Login failed:', err)
       }),
@@ -62,11 +57,11 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     // Check both token and userId for more robust authentication
-    return !!localStorage.getItem('authToken') && !!localStorage.getItem('userId');
+    return !!localStorage.getItem('accessToken') && !!localStorage.getItem('userId');
   }
 
   getAuthToken(): string | null {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem('accessToken');
   }
 
   private handleError(error: HttpErrorResponse) {

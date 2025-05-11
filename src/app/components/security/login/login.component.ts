@@ -21,26 +21,41 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  ngOnInit(): void
+  {
+    //localStorage.removeItem('accessToken')
+    //localStorage.removeItem('fullname')
+    //localStorage.removeItem('role')
+    //localStorage.removeItem('roles')
+    //localStorage.removeItem('userId')
+    //localStorage.removeItem('username')
+    localStorage.clear()
+  }
+
   onSubmit(): void {
     this.authService.login(this.username, this.password).subscribe({
       next: async (response) => {
-        console.log('Full login response:', response);
-        console.log('Role array:', response.role);
-        console.log('First role:', response.role?.[0]);
+        /* console.log('Full login response:', response);
+        console.log('Role array:', response.roles);
+        console.log('First role:', response.roles?.[0]); */
+        // Store all necessary user data
+          localStorage.setItem('accessToken', response.accessToken); // Make sure your backend returns a token
+          localStorage.setItem('roles', JSON.stringify(response.roles));
+          localStorage.setItem('username', response.username);
+          localStorage.setItem('userId', response.userId);
+          localStorage.setItem('fullname', response.fullname);
+          
   
-        const role = response.role?.[0]?.name?.toLowerCase();
+        const role = response.role.toLowerCase();
   
         if (!role) {
           this.errorMessage = 'No role found in response.';
           return;
         }
-  
-        localStorage.setItem('userId', response.userId);
         localStorage.setItem('role', role);
-        localStorage.setItem('username', response.username || response.user?.username || 'User');
 
   
-        console.log('Stored Role:', localStorage.getItem('role')); // After setting the role in localStorage
+        //console.log('Stored Role:', localStorage.getItem('role')); // After setting the role in localStorage
  // Log the stored role
   
         if (role.toLowerCase() === 'admin') {
@@ -48,15 +63,15 @@ export class LoginComponent {
           await this.router.navigate(['/account/dashboard']);
         } else {
           console.log('Redirecting to wallet or welcome');
-          const status = await firstValueFrom(this.walletService.getWalletStatus());
+          localStorage.setItem('walletStatus', response.wallet.status)
+          const status = response.wallet.status//await firstValueFrom(this.walletService.getWalletStatus());
           console.log('Wallet Status:', status); // Log the wallet status
           if (status === 'ACTIVE') {
-            await this.router.navigate(['/wallet']);
+            await this.router.navigate(['/wallet/welcome']);
           } else {
-            await this.router.navigate(['/welcome']);
+            await this.router.navigate(['/pending']);
           }
         }
-        
       },
       error: (error) => {
         console.error('Login error:', error);

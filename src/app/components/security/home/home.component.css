@@ -1,6 +1,6 @@
 
 :where([class^="ri-"])::before { content: "\f3c2"; }
-        
+        #logo{height: 45px;}
         body {
             font-family: 'Inter', sans-serif;
         }

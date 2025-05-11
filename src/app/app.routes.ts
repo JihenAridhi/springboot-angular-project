@@ -8,11 +8,13 @@ import { ForgotPasswordComponent } from './components/security/forgot-password/f
 import { WalletComponent } from './components/security/wallet/wallet.component';
 import { NavbarComponent } from './components/security/navbar/navbar.component';
 import { AdminDashboardComponent } from './components/security/admin-dashboard/admin-dashboard.component';
-import { WelcomeComponent } from './components/security/welcome/welcome.component';
 import { walletStatusGuard } from './guards/wallet-status.guard';
 import { UsersComponent } from './components/security/admin-dashboard/users/users.component';
 import { SideNavComponent } from './components/security/admin-dashboard/side-nav/side-nav.component'; 
 import { DashboardComponent } from './components/security/admin-dashboard/dashboard/dashboard.component';
+import { PendingComponent } from './components/security/wallet/pending/pending.component';
+import { WelcomeComponent } from './components/security/wallet/welcome/welcome.component';
+import { SettingsComponent } from './components/security/wallet/settings/settings.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -20,11 +22,11 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'admin-dashboard', component: AdminDashboardComponent },
-  { path: 'welcome', component: WelcomeComponent},
+  { path: 'pending', component: PendingComponent},
   { path: 'wallet', component: WalletComponent},
-  {path: 'dashboard', component: DashboardComponent},
-  {path: 'users', component: UsersComponent},
-  {path: 'side-nav', component: SideNavComponent},
+  { path: 'dashboard', component: DashboardComponent},
+  { path: 'users', component: UsersComponent},
+  { path: 'side-nav', component: SideNavComponent},
 
   // Protected routes
   {
@@ -33,17 +35,22 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     data: { role: 'ROLE_USER' }
   },
-  {
-    path: 'wallet',
+  { 
+    path: 'wallet', 
     component: WalletComponent,
     canActivate: [AuthGuard, walletStatusGuard],
-    data: { requiredStatus: 'ACTIVE' }
+    data: {role: 'ROLE_CUSTOMER', requiredStatus: 'ACTIVE'},
+    children:
+    [
+      {path: 'welcome', component: WelcomeComponent},
+      {path: 'settings', component: SettingsComponent}
+    ]
   },
   {
-    path: 'welcome',
-    component: WelcomeComponent,
-    canActivate: [AuthGuard, walletStatusGuard],
-    data: { requiredStatus: 'PENDING' }
+    path: 'pending',
+    component: PendingComponent,
+    canActivate: [walletStatusGuard, AuthGuard],
+    data: { requiredStatus: 'PENDING', role: 'CUSTOMER_ROLE' }
   },
   {
     path: 'admin-dashboard',

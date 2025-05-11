@@ -13,10 +13,11 @@ export class WalletService {
   constructor(private http: HttpClient) {}
 
   getWalletStatus(): Observable<WalletStatus> {
-    return this.http.get('http://localhost:8080/api/wallet/status')
+    const userId = localStorage.getItem('userId')
+    return this.http.get('http://localhost:8080/api/wallet/'+ userId +'/status')
     .pipe(
       tap((response: any) => {
-        if (!['PENDING', 'ACTIVE', 'REJECTED'].includes(response.status)) {
+        if (!['PENDING', 'ACTIVE', 'REJECTED'].includes(response.status)) { 
           console.warn('Invalid wallet status received:', response.status);
         }
       }),

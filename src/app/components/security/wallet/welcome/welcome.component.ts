@@ -1,19 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { WalletService } from '../../../../services/wallet.service';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
-import { NavbarComponent } from '../navbar/navbar.component';
-import { WalletService } from '../../../services/wallet.service';
-import { Subscription, interval, switchMap } from 'rxjs';
 
 @Component({
-  selector: 'app-wallet',
-  standalone: true,
-  templateUrl: './wallet.component.html',
-  styleUrls: ['./wallet.component.css'],
-  imports: [CommonModule, NavbarComponent, RouterOutlet, RouterModule] 
+  selector: 'app-welcome',
+  imports: [CommonModule],
+  templateUrl: './welcome.component.html',
+  styleUrl: './welcome.component.css'
 })
-export class WalletComponent implements OnInit, OnDestroy {
+export class WelcomeComponent {
+
   wallet: any = null;
   loading = true;
   error: string | null = null;
@@ -28,17 +27,6 @@ export class WalletComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadWallet();
     this.username = localStorage.getItem('username') || 'User';
-    // Set up periodic status checking (every 30 seconds)
-    /* this.statusCheckSubscription = interval(30000).pipe(
-      switchMap(() => this.walletService.getWalletStatus())
-    ).subscribe({
-      next: (status) => {
-        if (status == 'PENDING') {
-          this.router.navigate(['wallet/welcome']);
-        }
-      },
-      error: (err) => console.error('Status check failed', err)
-    }); */
   }
 
   loadWallet() {
